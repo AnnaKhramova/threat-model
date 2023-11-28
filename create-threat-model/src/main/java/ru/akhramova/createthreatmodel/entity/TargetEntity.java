@@ -1,4 +1,4 @@
-package entity;
+package ru.akhramova.createthreatmodel.entity;
 
 import jakarta.persistence.*;
 import lombok.Getter;

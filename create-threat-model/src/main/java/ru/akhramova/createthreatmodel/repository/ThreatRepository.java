@@ -1,6 +1,6 @@
-package repository;
+package ru.akhramova.createthreatmodel.repository;
 
-import entity.ThreatEntity;
+import ru.akhramova.createthreatmodel.entity.ThreatEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

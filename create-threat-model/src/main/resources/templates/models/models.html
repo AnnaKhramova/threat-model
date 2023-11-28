@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Models</title>
+</head>
+<body>
+    <h2>Модели угроз безопасности информации</h2>
+    <div>
+        <ul th:each="model:${models}">
+            <li>
+                <p>Название: <span th:text="${model.name}"/></p>
+            </li>
+        </ul>
+    </div>
+    <form>
+        <input type="button"
+               value="Создать новую модель угроз"
+               onClick='location.href="/models/new_model"'/>
+    </form>
+</body>
+</html>

@@ -18,14 +18,26 @@ public class ThreatNodeEntity {
     @Column(name = "id")
     private Long id;
 
+    @Column(name = "model_id")
+    private Long modelId;
+
     @Column(name = "node_id")
     private Long nodeId;
 
+    @Column(name = "threat_id")
+    private Long threatId;
+
+    @Column(name = "source_id")
+    private Long sourceId;
+
+    @Column(name = "method_id")
+    private Long methodId;
+
     @Column(name = "probability_of_implementation")
-    private Long probabilityOfImplementation;
+    private Double probabilityOfImplementation;
 
     @Column(name = "danger")
-    private Long danger;
+    private Double danger;
 
     @Column(name = "actuality")
     private Boolean actuality;

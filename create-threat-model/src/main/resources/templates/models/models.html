@@ -3,20 +3,53 @@
 <head>
     <meta charset="UTF-8">
     <title>Models</title>
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css"
+          integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
+          crossorigin="anonymous">
 </head>
 <body>
-    <h2>Модели угроз безопасности информации</h2>
-    <div>
-        <ul th:each="model:${models}">
-            <li>
-                <p>Название: <span th:text="${model.name}"/></p>
-            </li>
-        </ul>
+    <div class="container">
+        <div class="row">
+            <h2>Модели угроз безопасности информации</h2>
+        </div>
+
+        <table class="table">
+            <thead>
+            <tr>
+                <th scope="col">Id</th>
+                <th scope="col">Название</th>
+                <th scope="col">Отредактировать</th>
+                <th scope="col">Скачать</th>
+                <th scope="col">Удалить</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="model: ${models}">
+                <td th:text="${model.getId()}"/>
+                <td th:text="${model.getName()}"/>
+                <td>
+                    <a th:href="@{/edit/{id} (id=${model.getId()})}"
+                       class="btn btn-primary btn-sm mb-3">Отредактировать</a>
+                </td>
+                <td>
+                    <a th:href="@{/download/{id} (id=${model.getId()})}"
+                       class="btn btn-primary btn-sm mb-3">Скачать</a>
+                </td>
+                <td>
+                    <a th:href="@{/delete/{id} (id=${model.getId()})}"
+                       class="btn btn-primary btn-sm mb-3">Удалить</a>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+
+        <div class="row">
+            <div class="col-lg-3">
+                <a th:href="@{/new}"
+                   class="btn btn-primary">Создать новую модель угроз</a>
+            </div>
+        </div>
     </div>
-    <form>
-        <input type="button"
-               value="Создать новую модель угроз"
-               onClick='location.href="/models/new_model"'/>
-    </form>
 </body>
 </html>

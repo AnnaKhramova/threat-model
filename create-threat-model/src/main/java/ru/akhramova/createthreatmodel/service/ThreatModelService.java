@@ -20,5 +20,21 @@ public class ThreatModelService {
         return modelRepository.findAll();
     }
 
+    public void saveModel(ModelEntity model) {
+        modelRepository.save(model);
+    }
+
+    public void editModel(Long id) {
+
+    }
+
+    public void downloadModel(Long id) {
+
+    }
+
+    public void deleteModel(Long id) {
+
+    }
+
 
 }

@@ -36,10 +36,10 @@ public class ThreatEntity {
 
     @ManyToMany
     @JoinTable(
-            name = "threat_method",
+            name = "threat_target",
             joinColumns = @JoinColumn(name = "threat_id"),
-            inverseJoinColumns = @JoinColumn(name = "method_id"))
-    List<MethodEntity> methods;
+            inverseJoinColumns = @JoinColumn(name = "target_id"))
+    List<TargetEntity> targets;
 
     @ManyToMany
     @JoinTable(
@@ -50,10 +50,10 @@ public class ThreatEntity {
 
     @ManyToMany
     @JoinTable(
-            name = "threat_target",
+            name = "threat_method",
             joinColumns = @JoinColumn(name = "threat_id"),
-            inverseJoinColumns = @JoinColumn(name = "target_id"))
-    List<TargetEntity> targets;
+            inverseJoinColumns = @JoinColumn(name = "method_id"))
+    List<MethodEntity> methods;
 
     @OneToMany(fetch = FetchType.EAGER)
     @JoinColumn(name = "threat_id", referencedColumnName = "id")

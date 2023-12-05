@@ -1,26 +1,28 @@
 package ru.akhramova.createthreatmodel.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.*;
 import ru.akhramova.createthreatmodel.entity.ModelEntity;
+import ru.akhramova.createthreatmodel.entity.SourceEntity;
+import ru.akhramova.createthreatmodel.entity.TargetEntity;
 import ru.akhramova.createthreatmodel.entity.ThreatNodeEntity;
 import ru.akhramova.createthreatmodel.service.ThreatModelService;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 @Controller
+@RequiredArgsConstructor
 public class ThreatModelController {
 
-    @Autowired
-    private ThreatModelService threatModelService;
+    private final ThreatModelService threatModelService;
 
-    private static List<ThreatNodeEntity> nodes = new ArrayList<>();
+    private static final List<ThreatNodeEntity> nodes = new ArrayList<>();
+    private static final List<TargetEntity> currentTargetsList = new ArrayList<>();
+    private static final List<SourceEntity> currentSourcesList = new ArrayList<>();
 
     @GetMapping
     public String getModels(Model model) {
@@ -28,8 +30,32 @@ public class ThreatModelController {
         return "models/models";
     }
 
-    @GetMapping("/new")
+    @GetMapping("/targets")
     public String createModel(Model model) {
+        model.addAttribute("targets", threatModelService.getAllTargets());
+        return "models/target_select_page";
+    }
+
+    @PostMapping("/sources")
+    public String selectSources(@RequestParam(value = "tars", required = false) int[] targets, Model model) {
+        if (targets != null) {
+            currentTargetsList.addAll(threatModelService.getTargetsByIds(Arrays.stream(targets).boxed().map(Long::valueOf).toList()));
+        }
+        model.addAttribute("sources", threatModelService.getAllSources());
+        return "models/source_select_page";
+    }
+
+    @PostMapping("/coefficients")
+    public String setCoefficients(@RequestParam(value = "sours", required = false) int[] sources, Model model) {
+        if (sources != null) {
+            currentSourcesList.addAll(threatModelService.getSourcesByIds(Arrays.stream(sources).boxed().map(Long::valueOf).toList()));
+        }
+        model.addAttribute("nodes", threatModelService.getNodes(currentTargetsList, currentSourcesList));
+        return "models/set_coefficients_page";
+    }
+
+    @PostMapping("/new")
+    public String setCoefficients(Model model) {
         ModelEntity modelEntity = new ModelEntity();
         model.addAttribute("modelData", modelEntity);
         return "models/new_model";

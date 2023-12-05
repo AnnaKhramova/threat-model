@@ -8,7 +8,4 @@ import java.util.List;
 
 @Repository
 public interface MethodRepository extends JpaRepository<MethodEntity, Long> {
-
-    List<MethodEntity> findAll();
-
 }

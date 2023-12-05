@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Создание новой модели угроз</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+</head>
+<body>
+<div class="container">
+    <div class="row">
+        <h2>
+            <br>
+            Выберите применимые объекты воздействия для Вашей информационной системы
+            <br>
+            <br>
+        </h2>
+    </div>
+
+    <form action="#" th:action="@{/sources}" method="post">
+        <tr th:each="target : ${targets}">
+            <td>
+                <input type="checkbox" name="tars" th:value="${target.id}"/>
+                <label th:text="${target.name}"></label>
+                <br>
+            </td>
+        </tr>
+        <tr>
+            <td colspan="2">
+                <br>
+                <input type="submit" value="Далее"/>
+                <br>
+            </td>
+        </tr>
+        <tr>
+            <br>
+        </tr>
+    </form>
+</div>
+</body>

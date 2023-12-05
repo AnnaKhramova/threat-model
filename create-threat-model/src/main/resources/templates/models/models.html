@@ -2,54 +2,60 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Models</title>
+    <title>Модели угроз</title>
 
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css"
           integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
           crossorigin="anonymous">
 </head>
 <body>
-    <div class="container">
-        <div class="row">
-            <h2>Модели угроз безопасности информации</h2>
-        </div>
+<div class="container">
+    <div class="row">
+        <h2>
+            <br>
+            Модели угроз безопасности информации
+            <br>
+            <br>
+        </h2>
+    </div>
 
-        <table class="table">
-            <thead>
-            <tr>
-                <th scope="col">Id</th>
-                <th scope="col">Название</th>
-                <th scope="col">Отредактировать</th>
-                <th scope="col">Скачать</th>
-                <th scope="col">Удалить</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr th:each="model: ${models}">
-                <td th:text="${model.getId()}"/>
-                <td th:text="${model.getName()}"/>
-                <td>
-                    <a th:href="@{/edit/{id} (id=${model.getId()})}"
-                       class="btn btn-primary btn-sm mb-3">Отредактировать</a>
-                </td>
-                <td>
-                    <a th:href="@{/download/{id} (id=${model.getId()})}"
-                       class="btn btn-primary btn-sm mb-3">Скачать</a>
-                </td>
-                <td>
-                    <a th:href="@{/delete/{id} (id=${model.getId()})}"
-                       class="btn btn-primary btn-sm mb-3">Удалить</a>
-                </td>
-            </tr>
-            </tbody>
-        </table>
+    <table class="table">
+        <thead>
+        <tr>
+            <th scope="col">Ид</th>
+            <th scope="col">Название</th>
+            <th scope="col">Отредактировать</th>
+            <th scope="col">Скачать</th>
+            <th scope="col">Удалить</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="model: ${models}">
+            <td th:text="${model.getId()}"/>
+            <td th:text="${model.getName()}"/>
+            <td>
+                <a th:href="@{/edit/{id} (id=${model.getId()})}"
+                   class="btn btn-primary btn-sm mb-3">Отредактировать</a>
+            </td>
+            <td>
+                <a th:href="@{/download/{id} (id=${model.getId()})}"
+                   class="btn btn-primary btn-sm mb-3">Скачать</a>
+            </td>
+            <td>
+                <a th:href="@{/delete/{id} (id=${model.getId()})}"
+                   class="btn btn-primary btn-sm mb-3">Удалить</a>
+            </td>
+        </tr>
+        </tbody>
+    </table>
 
-        <div class="row">
-            <div class="col-lg-3">
-                <a th:href="@{/new}"
-                   class="btn btn-primary">Создать новую модель угроз</a>
-            </div>
+    <div class="row">
+        <div class="col-lg-3">
+            <br>
+            <a th:href="@{/targets}"
+               class="btn btn-primary">Создать новую модель угроз</a>
         </div>
     </div>
+</div>
 </body>
 </html>

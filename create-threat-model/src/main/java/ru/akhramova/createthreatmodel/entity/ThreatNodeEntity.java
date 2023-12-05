@@ -18,20 +18,24 @@ public class ThreatNodeEntity {
     @Column(name = "id")
     private Long id;
 
-    @Column(name = "model_id")
-    private Long modelId;
+    @ManyToOne
+    @JoinColumn(name = "model_id", referencedColumnName = "id")
+    private ModelEntity model;
 
     @Column(name = "node_id")
     private Long nodeId;
 
-    @Column(name = "threat_id")
-    private Long threatId;
+    @ManyToOne
+    @JoinColumn(name = "threat_id", referencedColumnName = "id")
+    private ThreatEntity threat;
 
-    @Column(name = "source_id")
-    private Long sourceId;
+    @ManyToOne
+    @JoinColumn(name = "source_id", referencedColumnName = "id")
+    private SourceEntity source;
 
-    @Column(name = "method_id")
-    private Long methodId;
+    @ManyToOne
+    @JoinColumn(name = "method_id", referencedColumnName = "id")
+    private MethodEntity method;
 
     @Column(name = "probability_of_implementation")
     private Double probabilityOfImplementation;

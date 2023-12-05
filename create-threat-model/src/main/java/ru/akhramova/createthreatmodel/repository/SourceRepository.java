@@ -8,7 +8,4 @@ import java.util.List;
 
 @Repository
 public interface SourceRepository extends JpaRepository<SourceEntity, Long> {
-
-    List<SourceEntity> findAll();
-
 }

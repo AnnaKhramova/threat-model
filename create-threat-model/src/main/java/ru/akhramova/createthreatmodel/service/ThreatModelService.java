@@ -1,5 +1,6 @@
 package ru.akhramova.createthreatmodel.service;
 
+import dto.MethodDto;
 import dto.ThreatNodeDto;
 import lombok.RequiredArgsConstructor;
 import ru.akhramova.createthreatmodel.entity.*;
@@ -20,7 +21,6 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-@RequestMapping(produces = MediaType.APPLICATION_JSON_VALUE)
 public class ThreatModelService {
 
     private final ModelRepository modelRepository;
@@ -69,7 +69,12 @@ public class ThreatModelService {
                             node.setNodeNumber(count++);
                             node.setThreat(threatMapper.toDto(threat));
                             node.setSource(sourceMapper.toDto(source, sourceMapperContext));
-                            node.setMethod(methodMapper.toDto(source.getMethods().get(0)));
+                            node.setProperty(prop);
+                            if (!source.getMethods().isEmpty()) {
+                                node.setMethod(methodMapper.toDto(source.getMethods().get(0)));
+                            } else {
+                                node.setMethod(new MethodDto().setName(""));
+                            }
                             nodes.add(node);
                         }
                     }

@@ -26,6 +26,8 @@ public class ThreatModelController {
 
     @GetMapping
     public String getModels(Model model) {
+        currentTargetsList.clear();
+        currentSourcesList.clear();
         model.addAttribute("models", threatModelService.getAllModels());
         return "models/models";
     }
@@ -54,11 +56,11 @@ public class ThreatModelController {
         return "models/set_coefficients_page";
     }
 
-    @PostMapping("/new")
-    public String setCoefficients(Model model) {
+    @PostMapping("/preview")
+    public String previewModel(@ModelAttribute List<ThreatNodeEntity> nodes, Model model) {
         ModelEntity modelEntity = new ModelEntity();
         model.addAttribute("modelData", modelEntity);
-        return "models/new_model";
+        return "models/preview_page";
     }
 
     @PostMapping("/save")

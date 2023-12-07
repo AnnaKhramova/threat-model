@@ -12,7 +12,7 @@ import java.util.stream.Collectors;
 
 @Component
 @RequiredArgsConstructor
-public class SourceMapperContextImpl {
+public class SourceMapperContextImpl implements SourceMapperContext {
 
     @AfterMapping
     public void shortName(SourceEntity entity, @MappingTarget SourceDto source) {

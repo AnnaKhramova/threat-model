@@ -17,6 +17,8 @@ public class ThreatNodeDto {
 
     private SourceDto source;
 
+    private String property;
+
     private MethodDto method;
 
     private Double probabilityOfImplementation;

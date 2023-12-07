@@ -17,33 +17,57 @@
             <br>
         </h2>
     </div>
-    <table class="table">
-        <thead>
-        <tr>
-            <th scope="col">Ид</th>
-            <th scope="col">Название угрозы</th>
-            <th scope="col">Источник угрозы</th>
-            <th scope="col">Свойство ИБ</th>
-            <th scope="col">Способ реализации угрозы</th>
-            <th scope="col">Опасность угрозы</th>
-            <th scope="col">Вероятность реализации угрозы</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr th:each="node: ${nodes}">
-            <td th:text="${node.threat.id}"/>
-            <td th:text="${node.threat.name}"/>
-            <td th:text="${node.source.name}"/>
-        </tr>
-        </tbody>
-    </table>
-
-    <div class="row">
-        <div class="col-lg-3">
-            <br>
-            <a th:href="@{/targets}"
-               class="btn btn-primary">Создать новую модель угроз</a>
-        </div>
-    </div>
+    <form action="#" th:action="@{/preview}" th:object="${nodes}" method="post">
+        <table class="table">
+            <thead>
+            <tr>
+                <th scope="col">Ид</th>
+                <th scope="col">Название угрозы</th>
+                <th scope="col">Источник угрозы</th>
+                <th scope="col">Свойство ИБ</th>
+                <th scope="col">Способ реализации угрозы</th>
+                <th scope="col">Опасность угрозы</th>
+                <th scope="col">Вероятность реализации угрозы</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="node: ${nodes}">
+                <td th:text="${node.threat.id}"/>
+                <td th:text="${node.threat.name}"/>
+                <td th:text="${node.source.shortName}"/>
+                <td th:text="${node.property}"/>
+                <td th:text="${node.method.name}"/>
+                <td th:text="${node.method.name}"/>
+                <td>
+                    <select th:text="${node.probabilityOfImplementation}">
+                        <option value="0">0</option>
+                        <option value="0.2">0.2</option>
+                        <option value="0.5">0.5</option>
+                        <option value="1">1</option>
+                    </select>
+                </td>
+                <td>
+                    <select th:text="${node.danger}">
+                        <option value="0.2">0.2</option>
+                        <option value="0.6">0.6</option>
+                        <option value="1">1</option>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <br>
+                    <a th:href="@{/}"
+                       class="btn btn-primary">Вернуться в начало</a>
+                </td>
+                <td colspan="2">
+                    <br>
+                    <button class="btn btn-primary" type="submit">Далее</button>
+                    <br>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </form>
 </div>
 </body>

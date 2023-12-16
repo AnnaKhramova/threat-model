@@ -1,5 +1,6 @@
 package ru.akhramova.createthreatmodel.controller;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -16,6 +17,8 @@ import java.util.List;
 
 @Controller
 @RequiredArgsConstructor
+@Tag(name = "Threat model Controller",
+        description = "Сервис для автоматизированного построения модели угроз безопасности информации")
 public class ThreatModelController {
 
     private final ThreatModelService threatModelService;

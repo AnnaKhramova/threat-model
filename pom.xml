@@ -25,6 +25,7 @@
 		<spring-boot.version>3.1.5</spring-boot.version>
 		<mapstruct.version>1.5.5.Final</mapstruct.version>
 		<postgresql.version>42.6.0</postgresql.version>
+		<swagger.version>2.3.0</swagger.version>
 	</properties>
 	<dependencies>
 		<dependency>
@@ -57,6 +58,13 @@
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
+				<executions>
+					<execution>
+						<goals>
+							<goal>build-info</goal>
+						</goals>
+					</execution>
+				</executions>
 			</plugin>
 		</plugins>
 	</build>

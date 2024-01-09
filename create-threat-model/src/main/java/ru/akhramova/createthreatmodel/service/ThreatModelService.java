@@ -1,5 +1,6 @@
 package ru.akhramova.createthreatmodel.service;
 
+import dto.ModelDto;
 import dto.ThreatNodeDto;
 import ru.akhramova.createthreatmodel.entity.ModelEntity;
 import ru.akhramova.createthreatmodel.entity.SourceEntity;
@@ -21,7 +22,7 @@ public interface ThreatModelService {
 
     List<ThreatNodeDto> getNodes(List<TargetEntity> targets, List<SourceEntity> sources);
 
-    void saveModel(ModelEntity model);
+    void saveModel(ModelDto model);
 
     void editModel(Long id);
 

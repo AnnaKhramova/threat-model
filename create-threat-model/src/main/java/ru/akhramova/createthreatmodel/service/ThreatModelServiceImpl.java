@@ -1,8 +1,6 @@
 package ru.akhramova.createthreatmodel.service;
 
-import dto.MethodDto;
-import dto.ThreatDto;
-import dto.ThreatNodeDto;
+import dto.*;
 import lombok.RequiredArgsConstructor;
 import ru.akhramova.createthreatmodel.entity.*;
 import org.springframework.stereotype.Service;
@@ -15,9 +13,7 @@ import ru.akhramova.createthreatmodel.repository.SourceRepository;
 import ru.akhramova.createthreatmodel.repository.TargetRepository;
 import ru.akhramova.createthreatmodel.repository.ThreatRepository;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -70,13 +66,13 @@ public class ThreatModelServiceImpl implements ThreatModelService {
                             node.setThreat(threatMapper.toDto(threat));
                             node.setSource(sourceMapper.toDto(source, sourceMapperContext));
                             node.setProperty(prop);
-                            if (!source.getMethods().isEmpty()) {
-                                node.setMethod(methodMapper.toDto(source.getMethods().get(0)));
+                            if (!threat.getMethods().isEmpty()) {
+                                node.setMethod(methodMapper.toDto(threat.getMethods().get(0)));
                             } else {
                                 node.setMethod(new MethodDto().setName(""));
                             }
-                            node.setProbabilityOfImplementation(Double.valueOf(0));
-                            node.setDanger(Double.valueOf(0.2));
+                            node.setProbabilityOfImplementation("0.0");
+                            node.setDanger("0.2");
                             nodes.add(node);
                         }
                     }
@@ -87,8 +83,25 @@ public class ThreatModelServiceImpl implements ThreatModelService {
         return nodes;
     }
 
-    public void saveModel(ModelEntity model) {
-        modelRepository.save(model);
+    public void saveModel(ModelDto model) {
+        ModelEntity modelEntity = new ModelEntity();
+        modelEntity.setName(model.getName());
+        List<ThreatNodeDto> nodes = model.getNodes();
+        Set<ThreatNodeEntity> nodeEntities = new HashSet<>();
+        Long count = 1L;
+        for (ThreatNodeDto dto : nodes) {
+            ThreatNodeEntity entity = new ThreatNodeEntity();
+            entity.setModel(modelEntity);
+            entity.setNodeId(count++);
+            entity.setThreat(threatMapper.toEntity(dto.getThreat()));
+            entity.setSource(sourceMapper.toEntity(dto.getSource()));
+            entity.setMethod(dto.getMethod() != null ? methodMapper.toEntity(dto.getMethod()) : null);
+            entity.setProbabilityOfImplementation(Double.parseDouble(dto.getProbabilityOfImplementation()));
+            entity.setDanger(Double.parseDouble(dto.getDanger()));
+
+        }
+        modelEntity.setNodes(nodeEntities);
+        modelRepository.save(modelEntity);
     }
 
     public void editModel(Long id) {

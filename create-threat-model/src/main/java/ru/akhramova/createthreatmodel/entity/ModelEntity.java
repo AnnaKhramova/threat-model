@@ -17,6 +17,8 @@ import java.util.Set;
 public class ModelEntity {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Basic(optional = false)
     @Column(name = "id")
     private Long id;
 

@@ -22,7 +22,6 @@
     <table class="table">
         <thead>
         <tr>
-            <th scope="col">Ид</th>
             <th scope="col">Название</th>
             <th scope="col">Отредактировать</th>
             <th scope="col">Скачать</th>
@@ -31,7 +30,6 @@
         </thead>
         <tbody>
         <tr th:each="model: ${models}">
-            <td th:text="${model.getId()}"/>
             <td th:text="${model.getName()}"/>
             <td>
                 <a th:href="@{/edit/{id} (id=${model.getId()})}"

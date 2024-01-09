@@ -1,14 +1,15 @@
 package ru.akhramova.createthreatmodel.controller;
 
+import dto.Danger;
+import dto.ModelDto;
+import dto.ProbabilityOfImplementation;
+import dto.ThreatNodeDto;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import ru.akhramova.createthreatmodel.entity.ModelEntity;
-import ru.akhramova.createthreatmodel.entity.SourceEntity;
-import ru.akhramova.createthreatmodel.entity.TargetEntity;
-import ru.akhramova.createthreatmodel.entity.ThreatNodeEntity;
+import ru.akhramova.createthreatmodel.entity.*;
 import ru.akhramova.createthreatmodel.service.ThreatModelService;
 
 import java.util.ArrayList;
@@ -23,9 +24,19 @@ public class ThreatModelController {
 
     private final ThreatModelService threatModelService;
 
-    private static final List<ThreatNodeEntity> nodes = new ArrayList<>();
-    private static final List<TargetEntity> currentTargetsList = new ArrayList<>();
-    private static final List<SourceEntity> currentSourcesList = new ArrayList<>();
+    private static List<ThreatNodeDto> nodes = new ArrayList<>();
+    private static List<TargetEntity> currentTargetsList = new ArrayList<>();
+    private static List<SourceEntity> currentSourcesList = new ArrayList<>();
+
+    @ModelAttribute("probs")
+    public List<String> probabilitiesOfImplementation() {
+        return Arrays.asList("0", "0.2", "0.5", "1");
+    }
+
+    @ModelAttribute("dangers")
+    public List<String> dangers() {
+        return Arrays.asList("0.2", "0.6", "1");
+    }
 
     @GetMapping
     public String getModels(Model model) {
@@ -55,19 +66,22 @@ public class ThreatModelController {
         if (sources != null) {
             currentSourcesList.addAll(threatModelService.getSourcesByIds(Arrays.stream(sources).boxed().map(Long::valueOf).toList()));
         }
-        model.addAttribute("nodes", threatModelService.getNodes(currentTargetsList, currentSourcesList));
+        nodes = threatModelService.getNodes(currentTargetsList, currentSourcesList);
+        model.addAttribute("nodes", nodes);
         return "models/set_coefficients_page";
     }
 
     @PostMapping("/preview")
-    public String previewModel(@ModelAttribute List<ThreatNodeEntity> nodes, Model model) {
-        ModelEntity modelEntity = new ModelEntity();
-        model.addAttribute("modelData", modelEntity);
+    public String previewModel(Model model) {
+        ModelDto modelDto = new ModelDto();
+        modelDto.setNodes(nodes);
+        model.addAttribute("modelData", modelDto);
         return "models/preview_page";
     }
 
     @PostMapping("/save")
-    public String saveModel(@ModelAttribute ModelEntity model) {
+    public String saveModel(@ModelAttribute ModelDto model) {
+        model.setNodes(nodes);
         threatModelService.saveModel(model);
         return "redirect:models/models";
     }

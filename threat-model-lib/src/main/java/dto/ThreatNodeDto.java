@@ -21,9 +21,9 @@ public class ThreatNodeDto {
 
     private MethodDto method;
 
-    private Double probabilityOfImplementation;
+    private String probabilityOfImplementation;
 
-    private Double danger;
+    private String danger;
 
     private Boolean actuality;
 

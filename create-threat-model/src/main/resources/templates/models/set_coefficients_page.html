@@ -16,13 +16,12 @@
             <br>
             <br>
         </h2>
-        <p th:text="${#numbers.formatDecimal(num,2,3,'COMMA')}"></p>
     </div>
-    <form action="#" th:action="@{/preview}" th:object="${nodes}" method="post">
+    <form action="#" th:action="@{/preview}" th:method="post">
         <table class="table">
             <thead>
             <tr>
-                <th scope="col" th:text="#{nodes}"">Ид</th>
+                <th scope="col">Ид</th>
                 <th scope="col">Название угрозы</th>
                 <th scope="col">Источник угрозы</th>
                 <th scope="col">Свойство ИБ</th>
@@ -32,38 +31,49 @@
             </tr>
             </thead>
             <tbody>
-            <tr th:each="node: ${nodes}">
+            <tr th:each="node : ${nodes}">
                 <td th:text="${node.threat.id}"/>
                 <td th:text="${node.threat.name}"/>
                 <td th:text="${node.source.shortName}"/>
                 <td th:text="${node.property}"/>
                 <td th:text="${node.method.name}"/>
-                <td>
-                    <select th:text="${node.probabilityOfImplementation}">
-                        <option selected="selected" value="0">0</option>
-                        <option value="0.2">0.2</option>
-                        <option value="0.5">0.5</option>
-                        <option value="1">1</option>
+<!--                <td th:text="${node.probabilityOfImplementation}"/>-->
+<!--                <td th:text="${node.danger}"/>-->
+                <td th:attr="value=${node.probabilityOfImplementation}">
+                    <select id="probab" name="probab">
+                        <option th:each="prob : ${probs}" th:value="${prob}" th:text="${prob}"></option>
                     </select>
                 </td>
-                <td>
-                    <select th:text="${node.danger}">
-                        <option selected="selected" value="0.2">0.2</option>
-                        <option value="0.6">0.6</option>
-                        <option value="1">1</option>
+                <td th:attr="value=${node.danger}">
+                    <select id="danger" name="danger">
+                        <option th:each="danger : ${dangers}" th:value="${danger}" th:text="${danger}"></option>
                     </select>
                 </td>
+<!--                <td>-->
+<!--                    <select th:text="${node.probabilityOfImplementation}">-->
+<!--&lt;!&ndash;                    <select>&ndash;&gt;-->
+<!--                        <option selected="selected" value="0">0</option>-->
+<!--                        <option value="0.2">0.2</option>-->
+<!--                        <option value="0.5">0.5</option>-->
+<!--                        <option value="1">1</option>-->
+<!--                    </select>-->
+<!--                </td>-->
+<!--                <td>-->
+<!--                    <select th:text="${node.danger}">-->
+<!--&lt;!&ndash;                    <select>&ndash;&gt;-->
+<!--                        <option selected="selected" value="0.2">0.2</option>-->
+<!--                        <option value="0.6">0.6</option>-->
+<!--                        <option value="1">1</option>-->
+<!--                    </select>-->
+<!--                </td>-->
             </tr>
             <tr>
                 <td>
-                    <br>
                     <a th:href="@{/}"
                        class="btn btn-primary">Вернуться в начало</a>
                 </td>
-                <td colspan="2">
-                    <br>
+                <td>
                     <button class="btn btn-primary" type="submit">Далее</button>
-                    <br>
                 </td>
             </tr>
             </tbody>

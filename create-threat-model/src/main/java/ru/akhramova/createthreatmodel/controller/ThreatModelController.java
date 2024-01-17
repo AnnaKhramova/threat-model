@@ -86,19 +86,19 @@ public class ThreatModelController {
         return "redirect:/";
     }
 
-    @PostMapping("/edit/{id}")
+    @GetMapping("/edit/{id}")
     public String editModel(@PathVariable Long id) {
         threatModelService.editModel(id);
         return "redirect:/";
     }
 
-    @PostMapping("/download/{id}")
+    @GetMapping("/download/{id}")
     public String downloadModel(@PathVariable Long id) {
         threatModelService.downloadModel(id);
         return "redirect:/";
     }
 
-    @PostMapping("/delete/{id}")
+    @GetMapping("/delete/{id}")
     public String deleteModel(@PathVariable Long id) {
         threatModelService.deleteModel(id);
         return "redirect:/";

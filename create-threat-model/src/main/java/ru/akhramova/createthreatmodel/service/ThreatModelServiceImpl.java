@@ -127,7 +127,7 @@ public class ThreatModelServiceImpl implements ThreatModelService {
     }
 
     public void deleteModel(Long id) {
-
+        modelRepository.deleteById(id);
     }
 
 

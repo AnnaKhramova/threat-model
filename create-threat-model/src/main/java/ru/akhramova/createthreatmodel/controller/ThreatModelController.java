@@ -1,9 +1,6 @@
 package ru.akhramova.createthreatmodel.controller;
 
-import dto.Danger;
-import dto.ModelDto;
-import dto.ProbabilityOfImplementation;
-import dto.ThreatNodeDto;
+import dto.*;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
@@ -27,6 +24,8 @@ public class ThreatModelController {
     private static List<ThreatNodeDto> nodes = new ArrayList<>();
     private static List<TargetEntity> currentTargetsList = new ArrayList<>();
     private static List<SourceEntity> currentSourcesList = new ArrayList<>();
+
+    private static ModelDto currentModel = new ModelDto();
 
     @ModelAttribute("probs")
     public List<String> probabilitiesOfImplementation() {
@@ -73,23 +72,25 @@ public class ThreatModelController {
 
     @PostMapping("/preview")
     public String previewModel(Model model) {
-        ModelDto modelDto = new ModelDto();
-        modelDto.setNodes(nodes);
-        model.addAttribute("modelData", modelDto);
+        currentModel.setNodes(nodes);
+        threatModelService.createModel(currentModel);
+        model.addAttribute("modelData", currentModel);
+        model.addAttribute("nodes", currentModel.getNodes());
         return "models/preview_page";
     }
 
     @PostMapping("/save")
-    public String saveModel(@ModelAttribute ModelDto modelDto, Model model) {
-        modelDto.setNodes(nodes);
-        threatModelService.saveModel(modelDto);
+    public String saveModel(@ModelAttribute NameContainer modelData, Model model) {
+        currentModel.setName(modelData.getName());
+        threatModelService.saveModel(currentModel);
         return "redirect:/";
     }
 
     @GetMapping("/edit/{id}")
     public String editModel(@PathVariable Long id) {
-        threatModelService.editModel(id);
-        return "redirect:/";
+        ModelEntity model = threatModelService.getModel(id);
+        currentSourcesList = threatModelService.getSources(model);
+        return "redirect:/targets";
     }
 
     @GetMapping("/download/{id}")

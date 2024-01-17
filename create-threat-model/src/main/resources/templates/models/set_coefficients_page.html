@@ -37,8 +37,6 @@
                 <td th:text="${node.source.shortName}"/>
                 <td th:text="${node.property}"/>
                 <td th:text="${node.method.name}"/>
-<!--                <td th:text="${node.probabilityOfImplementation}"/>-->
-<!--                <td th:text="${node.danger}"/>-->
                 <td th:attr="value=${node.probabilityOfImplementation}">
                     <select id="probab" name="probab">
                         <option th:each="prob : ${probs}" th:value="${prob}" th:text="${prob}"></option>
@@ -49,23 +47,6 @@
                         <option th:each="danger : ${dangers}" th:value="${danger}" th:text="${danger}"></option>
                     </select>
                 </td>
-<!--                <td>-->
-<!--                    <select th:text="${node.probabilityOfImplementation}">-->
-<!--&lt;!&ndash;                    <select>&ndash;&gt;-->
-<!--                        <option selected="selected" value="0">0</option>-->
-<!--                        <option value="0.2">0.2</option>-->
-<!--                        <option value="0.5">0.5</option>-->
-<!--                        <option value="1">1</option>-->
-<!--                    </select>-->
-<!--                </td>-->
-<!--                <td>-->
-<!--                    <select th:text="${node.danger}">-->
-<!--&lt;!&ndash;                    <select>&ndash;&gt;-->
-<!--                        <option selected="selected" value="0.2">0.2</option>-->
-<!--                        <option value="0.6">0.6</option>-->
-<!--                        <option value="1">1</option>-->
-<!--                    </select>-->
-<!--                </td>-->
             </tr>
             <tr>
                 <td>

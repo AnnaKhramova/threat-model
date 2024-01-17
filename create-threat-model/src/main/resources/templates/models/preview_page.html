@@ -11,36 +11,51 @@
 <body>
 <div class="container">
     <div class="row">
-        <div class="col-lf-6 col-md-6 col-sm-6 container justify-content-center card">
-            <h2>
-                <br>
-                Список актуальных угроз для Вашей информационной системы:
-                <br>
-                <br>
-            </h2>
-            <div class="card-body">
-                <form th:action="@{/save}" th:object="${modelData}" method="post">
-
-                    <div class="form-group">
-                        <label>Название</label>
-                        <input type="text"
-                               name="name"
-                               th:field="*{name}"
-                               class="form-control"
-                               placeholder="Введите название модели"
-                               required="true"
-                        />
-                    </div>
-
-                    <div class="box-footer">
-                        <button type="submit" class="btn btn-primary">
-                            Создать
-                        </button>
-                    </div>
-
-                </form>
+        <h2>
+            <br>
+            Список актуальных угроз для Вашей информационной системы:
+            <br>
+            <br>
+        </h2>
+    </div>
+    <table class="table">
+        <thead>
+        <tr>
+            <th scope="col">Ид</th>
+            <th scope="col">Название угрозы</th>
+            <th scope="col">Источник угрозы</th>
+            <th scope="col">Свойство ИБ</th>
+            <th scope="col">Способ реализации угрозы</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="node : ${nodes}">
+            <td th:text="${node.threat.id}"/>
+            <td th:text="${node.threat.name}"/>
+            <td th:text="${node.source.shortName}"/>
+            <td th:text="${node.property}"/>
+            <td th:text="${node.method.name}"/>
+        </tr>
+        </tbody>
+    </table>
+    <div class="card-body">
+        <form th:action="@{/save}" th:object="${modelData}" method="post">
+            <div class="form-group">
+                <h3>Название модели</h3>
+                <input type="text"
+                       name="name"
+                       th:field="*{name}"
+                       class="form-control"
+                       placeholder="Введите название модели"
+                       required="true"
+                />
             </div>
-        </div>
+            <div class="box-footer">
+                <button type="submit" class="btn btn-primary">
+                    Создать
+                </button>
+            </div>
+        </form>
     </div>
 </div>
 </body>

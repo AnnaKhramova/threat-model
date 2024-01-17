@@ -22,7 +22,13 @@ public interface ThreatModelService {
 
     List<ThreatNodeDto> getNodes(List<TargetEntity> targets, List<SourceEntity> sources);
 
+    void createModel(ModelDto model);
+
     void saveModel(ModelDto model);
+
+    ModelEntity getModel(Long id);
+
+    List<SourceEntity> getSources(ModelEntity model);
 
     void editModel(Long id);
 

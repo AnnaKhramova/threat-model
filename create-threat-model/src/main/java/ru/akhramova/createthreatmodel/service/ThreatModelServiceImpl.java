@@ -96,7 +96,16 @@ public class ThreatModelServiceImpl implements ThreatModelService {
         return nodes;
     }
 
-    @Transactional
+    public void createModel(ModelDto model) {
+        for (ThreatNodeDto node : model.getNodes()) {
+            if ((Double.parseDouble(node.getProbabilityOfImplementation()) + Double.parseDouble(node.getDanger())) / 2 > 0.3) {
+                node.setActuality(true);
+            } else {
+                node.setActuality(false);
+            }
+        }
+    }
+
     public void saveModel(ModelDto model) {
         ModelEntity modelEntity = new ModelEntity();
         modelEntity.setName(model.getName());
@@ -112,10 +121,49 @@ public class ThreatModelServiceImpl implements ThreatModelService {
             entity.setMethod(dto.getMethod() != null ? methodMapper.toEntity(dto.getMethod()) : null);
             entity.setProbabilityOfImplementation(Double.parseDouble(dto.getProbabilityOfImplementation()));
             entity.setDanger(Double.parseDouble(dto.getDanger()));
-
+            entity.setActuality(dto.getActuality());
+            nodeEntities.add(entity);
         }
         modelEntity.setNodes(nodeEntities);
         modelRepository.saveAndFlush(modelEntity);
+    }
+
+    public ModelEntity getModel(Long id) {
+        ModelEntity modelEntity = modelRepository.getById(id);
+        ModelDto modelDto = new ModelDto();
+        modelDto.setName(modelEntity.getName());
+        modelDto.setNodes(getNodeDtos(modelEntity));
+        return modelEntity;
+    }
+
+    private List<ThreatNodeDto> getNodeDtos(ModelEntity modelEntity) {
+        List<ThreatNodeEntity> nodeEntities = modelEntity.getNodes().stream()
+                .sorted(Comparator.comparing(ThreatNodeEntity::getNodeId)).toList();
+        List<ThreatNodeDto> nodes = new ArrayList<>();
+        Long count = 1L;
+        for (ThreatNodeEntity entity : nodeEntities) {
+            ThreatNodeDto dto = new ThreatNodeDto();
+            dto.setModelId(modelEntity.getId());
+            dto.setNodeNumber(count++);
+            dto.setThreat(threatMapper.toDto(entity.getThreat()));
+            dto.setSource(sourceMapper.toDto(entity.getSource()));
+            dto.setMethod(entity.getMethod() != null ? methodMapper.toDto(entity.getMethod()) : null);
+            dto.setProbabilityOfImplementation(entity.getProbabilityOfImplementation().toString());
+            dto.setDanger(entity.getDanger().toString());
+            dto.setActuality(entity.getActuality());
+            nodes.add(dto);
+        }
+        return nodes;
+    }
+
+    public List<SourceEntity> getSources(ModelEntity model) {
+        List<ThreatNodeDto> nodes = getNodeDtos(model);
+        List<SourceEntity> sources = new ArrayList<>();
+        for (ThreatNodeDto node : nodes) {
+            Optional<SourceEntity> source = sourceRepository.findById(node.getSource().getId());
+            source.ifPresent(sources::add);
+        }
+        return sources;
     }
 
     public void editModel(Long id) {

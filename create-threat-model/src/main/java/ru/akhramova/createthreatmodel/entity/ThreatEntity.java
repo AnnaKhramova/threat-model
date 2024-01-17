@@ -1,7 +1,9 @@
 package ru.akhramova.createthreatmodel.entity;
 
 import jakarta.persistence.*;
+import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 
@@ -13,6 +15,7 @@ import java.util.Set;
 @Entity
 @Table(name = "threats")
 @Accessors(chain = true)
+@NoArgsConstructor(access = AccessLevel.PUBLIC)
 public class ThreatEntity {
 
     @Id

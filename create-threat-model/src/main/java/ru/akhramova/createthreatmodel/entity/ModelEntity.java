@@ -1,7 +1,9 @@
 package ru.akhramova.createthreatmodel.entity;
 
 import jakarta.persistence.*;
+import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 import org.hibernate.annotations.Generated;
@@ -14,10 +16,11 @@ import java.util.Set;
 @Entity
 @Table(name = "models")
 @Accessors(chain = true)
+@NoArgsConstructor(access = AccessLevel.PUBLIC)
 public class ModelEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
     @Column(name = "id")
     private Long id;

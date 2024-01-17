@@ -1,7 +1,9 @@
 package ru.akhramova.createthreatmodel.service;
 
 import dto.*;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import ru.akhramova.createthreatmodel.entity.*;
 import org.springframework.stereotype.Service;
 import ru.akhramova.createthreatmodel.entity.mapper.MethodMapper;
@@ -19,13 +21,24 @@ import java.util.*;
 @RequiredArgsConstructor
 public class ThreatModelServiceImpl implements ThreatModelService {
 
+    @Autowired
     private final ModelRepository modelRepository;
+
+    @Autowired
     private final ThreatRepository threatRepository;
+
+    @Autowired
     private final TargetRepository targetRepository;
+
+    @Autowired
     private final SourceRepository sourceRepository;
+
     private final ThreatMapper threatMapper;
+
     private final SourceMapper sourceMapper;
+
     private final SourceMapperContext sourceMapperContext;
+
     private final MethodMapper methodMapper;
 
     public List<ModelEntity> getAllModels() {
@@ -83,6 +96,7 @@ public class ThreatModelServiceImpl implements ThreatModelService {
         return nodes;
     }
 
+    @Transactional
     public void saveModel(ModelDto model) {
         ModelEntity modelEntity = new ModelEntity();
         modelEntity.setName(model.getName());
@@ -101,7 +115,7 @@ public class ThreatModelServiceImpl implements ThreatModelService {
 
         }
         modelEntity.setNodes(nodeEntities);
-        modelRepository.save(modelEntity);
+        modelRepository.saveAndFlush(modelEntity);
     }
 
     public void editModel(Long id) {

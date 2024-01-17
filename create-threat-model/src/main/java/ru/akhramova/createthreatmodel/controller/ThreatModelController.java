@@ -80,28 +80,28 @@ public class ThreatModelController {
     }
 
     @PostMapping("/save")
-    public String saveModel(@ModelAttribute ModelDto model) {
-        model.setNodes(nodes);
-        threatModelService.saveModel(model);
-        return "redirect:models/models";
+    public String saveModel(@ModelAttribute ModelDto modelDto, Model model) {
+        modelDto.setNodes(nodes);
+        threatModelService.saveModel(modelDto);
+        return "redirect:/";
     }
 
     @PostMapping("/edit/{id}")
     public String editModel(@PathVariable Long id) {
         threatModelService.editModel(id);
-        return "redirect:models/models";
+        return "redirect:/";
     }
 
     @PostMapping("/download/{id}")
     public String downloadModel(@PathVariable Long id) {
         threatModelService.downloadModel(id);
-        return "redirect:models/models";
+        return "redirect:/";
     }
 
     @PostMapping("/delete/{id}")
     public String deleteModel(@PathVariable Long id) {
         threatModelService.deleteModel(id);
-        return "redirect:models/models";
+        return "redirect:/";
     }
 
 }

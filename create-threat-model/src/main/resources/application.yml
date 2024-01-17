@@ -3,6 +3,16 @@ server:
   servlet:
     context-path: /create-threat-model
 spring:
+  h2:
+    console:
+      enabled: true
+  jpa:
+    hibernate:
+      ddl-auto: validate
+#      use-new-id-generator-mappings: true
+    properties:
+      hibernate:
+        show_sql: false
   datasource:
     url: jdbc:postgresql://${POSTGRESQL_NODES:localhost:5433}/${POSTGRESQL_DATABASE:the name of the database should be here}?loadBalanceHosts=true
     username: ${POSTGRESQL_USER:there should be a username here}

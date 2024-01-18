@@ -41,6 +41,7 @@ public class ThreatModelController {
     public String getModels(Model model) {
         currentTargetsList.clear();
         currentSourcesList.clear();
+        currentModel = new ModelDto();
         model.addAttribute("models", threatModelService.getAllModels());
         return "models/models";
     }
@@ -63,6 +64,7 @@ public class ThreatModelController {
     @PostMapping("/coefficients")
     public String setCoefficients(@RequestParam(value = "sours", required = false) int[] sources, Model model) {
         if (sources != null) {
+            currentSourcesList.clear();
             currentSourcesList.addAll(threatModelService.getSourcesByIds(Arrays.stream(sources).boxed().map(Long::valueOf).toList()));
         }
         nodes = threatModelService.getNodes(currentTargetsList, currentSourcesList);
@@ -90,6 +92,8 @@ public class ThreatModelController {
     public String editModel(@PathVariable Long id) {
         ModelEntity model = threatModelService.getModel(id);
         currentSourcesList = threatModelService.getSources(model);
+        currentModel.setId(model.getId());
+        currentModel.setName(model.getName());
         return "redirect:/targets";
     }
 

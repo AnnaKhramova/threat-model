@@ -16,6 +16,8 @@ import lombok.experimental.Accessors;
 public class ThreatNodeEntity {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Basic(optional = false)
     @Column(name = "id")
     private Long id;
 

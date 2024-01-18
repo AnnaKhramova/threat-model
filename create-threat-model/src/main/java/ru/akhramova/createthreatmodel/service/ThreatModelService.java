@@ -30,8 +30,6 @@ public interface ThreatModelService {
 
     List<SourceEntity> getSources(ModelEntity model);
 
-    void editModel(Long id);
-
     void downloadModel(Long id);
 
     void deleteModel(Long id);

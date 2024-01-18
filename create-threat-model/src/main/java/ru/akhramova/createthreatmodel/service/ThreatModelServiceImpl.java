@@ -10,10 +10,7 @@ import ru.akhramova.createthreatmodel.entity.mapper.MethodMapper;
 import ru.akhramova.createthreatmodel.entity.mapper.SourceMapper;
 import ru.akhramova.createthreatmodel.entity.mapper.SourceMapperContext;
 import ru.akhramova.createthreatmodel.entity.mapper.ThreatMapper;
-import ru.akhramova.createthreatmodel.repository.ModelRepository;
-import ru.akhramova.createthreatmodel.repository.SourceRepository;
-import ru.akhramova.createthreatmodel.repository.TargetRepository;
-import ru.akhramova.createthreatmodel.repository.ThreatRepository;
+import ru.akhramova.createthreatmodel.repository.*;
 
 import java.util.*;
 
@@ -29,6 +26,9 @@ public class ThreatModelServiceImpl implements ThreatModelService {
 
     @Autowired
     private final TargetRepository targetRepository;
+
+    @Autowired
+    private final ThreatNodeRepository threatNodeRepository;
 
     @Autowired
     private final SourceRepository sourceRepository;
@@ -84,8 +84,24 @@ public class ThreatModelServiceImpl implements ThreatModelService {
                             } else {
                                 node.setMethod(new MethodDto().setName(""));
                             }
-                            node.setProbabilityOfImplementation("0.0");
-                            node.setDanger("0.2");
+                            double rand = Math.random();
+                            if (rand < 0.11) {
+                                node.setProbabilityOfImplementation("0.0");
+                            } else if (rand < 0.3) {
+                                node.setProbabilityOfImplementation("0.2");
+                            } else if (rand < 0.6) {
+                                node.setProbabilityOfImplementation("0.5");
+                            } else {
+                                node.setProbabilityOfImplementation("1.0");
+                            }
+                            rand = Math.random();
+                            if (rand < 0.3) {
+                                node.setDanger("0.2");
+                            } else if (rand < 0.7) {
+                                node.setDanger("0.6");
+                            } else {
+                                node.setDanger("1.0");
+                            }
                             nodes.add(node);
                         }
                     }
@@ -98,16 +114,22 @@ public class ThreatModelServiceImpl implements ThreatModelService {
 
     public void createModel(ModelDto model) {
         for (ThreatNodeDto node : model.getNodes()) {
-            if ((Double.parseDouble(node.getProbabilityOfImplementation()) + Double.parseDouble(node.getDanger())) / 2 > 0.3) {
+            if ((Double.parseDouble(node.getProbabilityOfImplementation()) + Double.parseDouble(node.getDanger())) / 2 > 0.5) {
                 node.setActuality(true);
             } else {
                 node.setActuality(false);
             }
         }
+        model.getNodes().removeAll(model.getNodes().stream().filter(n -> n.getActuality().equals(false)).toList());
     }
 
+    @Transactional
     public void saveModel(ModelDto model) {
+        if (model.getId() != null && modelRepository.getById(model.getId()) != null) {
+            deleteModel(model.getId());
+        }
         ModelEntity modelEntity = new ModelEntity();
+        modelEntity.setId(model.getId() != null ? model.getId() : null);
         modelEntity.setName(model.getName());
         List<ThreatNodeDto> nodes = model.getNodes();
         Set<ThreatNodeEntity> nodeEntities = new HashSet<>();
@@ -118,21 +140,24 @@ public class ThreatModelServiceImpl implements ThreatModelService {
             entity.setNodeId(count++);
             entity.setThreat(threatMapper.toEntity(dto.getThreat()));
             entity.setSource(sourceMapper.toEntity(dto.getSource()));
-            entity.setMethod(dto.getMethod() != null ? methodMapper.toEntity(dto.getMethod()) : null);
+            if (dto.getMethod().getId() != null && !dto.getMethod().getName().equals("")) {
+                entity.setMethod(methodMapper.toEntity(dto.getMethod()));
+            }
             entity.setProbabilityOfImplementation(Double.parseDouble(dto.getProbabilityOfImplementation()));
             entity.setDanger(Double.parseDouble(dto.getDanger()));
             entity.setActuality(dto.getActuality());
             nodeEntities.add(entity);
         }
         modelEntity.setNodes(nodeEntities);
-        modelRepository.saveAndFlush(modelEntity);
+        modelRepository.save(modelEntity);
+        for (ThreatNodeEntity node : modelEntity.getNodes()) {
+//            node.setModel(modelRepository.getLast());
+            threatNodeRepository.save(node);
+        }
     }
 
     public ModelEntity getModel(Long id) {
         ModelEntity modelEntity = modelRepository.getById(id);
-        ModelDto modelDto = new ModelDto();
-        modelDto.setName(modelEntity.getName());
-        modelDto.setNodes(getNodeDtos(modelEntity));
         return modelEntity;
     }
 
@@ -166,15 +191,13 @@ public class ThreatModelServiceImpl implements ThreatModelService {
         return sources;
     }
 
-    public void editModel(Long id) {
-
-    }
-
     public void downloadModel(Long id) {
 
     }
 
+    @Transactional
     public void deleteModel(Long id) {
+        threatNodeRepository.deleteNodesByModelId(id);
         modelRepository.deleteById(id);
     }
 

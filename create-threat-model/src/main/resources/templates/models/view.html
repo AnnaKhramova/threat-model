@@ -2,7 +2,7 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Создание новой модели угроз</title>
+    <title>Просмотр модели угроз</title>
 
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css"
           integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
@@ -13,7 +13,7 @@
     <div class="row">
         <h2>
             <br>
-            Список актуальных угроз для Вашей информационной системы:
+            Просмотр модели угроз безопасности информации
             <br>
             <br>
         </h2>
@@ -36,27 +36,15 @@
             <td th:text="${node.property}"/>
             <td th:text="${node.method.name}"/>
         </tr>
+        <tr>
+            <td>
+                <a th:href="@{/}"
+                   class="btn btn-primary">Вернуться в начало</a>
+            </td>
+        </tr>
         </tbody>
     </table>
-    <div class="card-body">
-        <form th:action="@{/save}" th:object="${modelData}" method="post">
-            <div class="form-group">
-                <h3>Название модели</h3>
-                <input type="text"
-                       name="name"
-                       th:field="*{name}"
-                       class="form-control"
-                       placeholder="Введите название модели"
-                       required="true"
-                />
-            </div>
-            <div class="box-footer">
-                <button type="submit" class="btn btn-primary">
-                    Сохранить
-                </button>
-            </div>
-        </form>
-    </div>
+
 </div>
 </body>
 </html>

@@ -26,8 +26,8 @@
                 <th scope="col">Источник угрозы</th>
                 <th scope="col">Свойство ИБ</th>
                 <th scope="col">Способ реализации угрозы</th>
-                <th scope="col">Опасность угрозы</th>
                 <th scope="col">Вероятность реализации угрозы</th>
+                <th scope="col">Опасность угрозы</th>
             </tr>
             </thead>
             <tbody>
@@ -37,14 +37,20 @@
                 <td th:text="${node.source.shortName}"/>
                 <td th:text="${node.property}"/>
                 <td th:text="${node.method.name}"/>
-                <td th:attr="value=${node.probabilityOfImplementation}">
-                    <select id="probab" name="probab">
-                        <option th:each="prob : ${probs}" th:value="${prob}" th:text="${prob}"></option>
+<!--                <td th:attr="value=${node.probabilityOfImplementation}">-->
+<!--                    <select id="probab" name="probab">-->
+<!--                        <option th:each="prob : ${probs}" th:value="${prob}" th:text="${prob}" th:selected="${prob == node.probabilityOfImplementation}"></option>-->
+<!--                    </select>-->
+<!--                </td>-->
+                <td>
+                    <select th:value="${node.probabilityOfImplementation}">
+                        <option th:each="prob : ${probs}" th:value="${prob}" th:text="${prob}" th:selected="${prob == node.probabilityOfImplementation}"></option>
                     </select>
                 </td>
-                <td th:attr="value=${node.danger}">
-                    <select id="danger" name="danger">
-                        <option th:each="danger : ${dangers}" th:value="${danger}" th:text="${danger}"></option>
+                <td>
+                    <select th:value="${node.danger}">
+<!--                        <option th:each="danger : ${dangers}" th:value="${danger.id}" th:text="${danger.name}" th:selected="${danger.name == node.danger.name}"></option>-->
+                        <option th:each="danger : ${dangers}" th:value="${danger}" th:text="${danger}" th:selected="${danger == node.danger}"></option>
                     </select>
                 </td>
             </tr>

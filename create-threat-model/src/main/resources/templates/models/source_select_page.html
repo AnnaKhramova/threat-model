@@ -22,7 +22,7 @@
     <form action="#" th:action="@{/coefficients}" method="post">
         <tr th:each="source : ${sources}">
             <td>
-                <input type="checkbox" name="sours" th:value="${source.id}"/>
+                <input type="checkbox" name="sours" th:value="${source.id}" th:checked="${#arrays.contains(current_sources, source.id)}"/>
                 <label th:text="${source.name}"></label>
                 <br>
             </td>

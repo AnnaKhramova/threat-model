@@ -21,7 +21,8 @@
     <form action="#" th:action="@{/sources}" method="post">
         <tr th:each="target : ${targets}">
             <td>
-                <input type="checkbox" name="tars" th:value="${target.id}"/>
+<!--                <input type="checkbox" name="tars" th:value="${target.id}"/>-->
+                <input type="checkbox" name="tars" th:value="${target.id}" th:checked="${#arrays.contains(current_targets, target.id)}"/>
                 <label th:text="${target.name}"></label>
                 <br>
             </td>

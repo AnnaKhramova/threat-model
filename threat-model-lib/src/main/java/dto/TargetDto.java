@@ -5,7 +5,7 @@ import lombok.experimental.Accessors;
 
 @Data
 @Accessors(chain = true)
-public class Danger {
+public class TargetDto {
 
     private Long id;
 

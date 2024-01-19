@@ -26,9 +26,13 @@ public interface ThreatModelService {
 
     void saveModel(ModelDto model);
 
-    ModelEntity getModel(Long id);
+    ModelDto getModel(Long id);
 
-    List<SourceEntity> getSources(ModelEntity model);
+    List<SourceEntity> getSources(ModelDto model);
+
+    List<TargetEntity> getTargets(ModelDto model);
+
+    void compareNodes(List<ThreatNodeDto> currentList, List<ThreatNodeDto> newList);
 
     void downloadModel(Long id);
 

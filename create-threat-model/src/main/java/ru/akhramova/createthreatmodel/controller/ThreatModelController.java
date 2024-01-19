@@ -21,26 +21,28 @@ public class ThreatModelController {
 
     private final ThreatModelService threatModelService;
 
-    private static List<ThreatNodeDto> nodes = new ArrayList<>();
+    private static List<ThreatNodeDto> currentNodes = new ArrayList<>();
     private static List<TargetEntity> currentTargetsList = new ArrayList<>();
     private static List<SourceEntity> currentSourcesList = new ArrayList<>();
-
     private static ModelDto currentModel = new ModelDto();
 
     @ModelAttribute("probs")
     public List<String> probabilitiesOfImplementation() {
-        return Arrays.asList("0", "0.2", "0.5", "1");
+        return Arrays.asList("0.0", "0.2", "0.5", "1.0");
     }
 
     @ModelAttribute("dangers")
+//    public List<Danger> dangers() {
     public List<String> dangers() {
         return Arrays.asList("0.2", "0.6", "1");
+//        return Arrays.asList(new Danger().setId(1L).setName("0.2"), new Danger().setId(2L).setName("0.6"), new Danger().setId(3L).setName("1.0"));
     }
 
     @GetMapping
     public String getModels(Model model) {
         currentTargetsList.clear();
         currentSourcesList.clear();
+        currentNodes.clear();
         currentModel = new ModelDto();
         model.addAttribute("models", threatModelService.getAllModels());
         return "models/models";
@@ -49,15 +51,18 @@ public class ThreatModelController {
     @GetMapping("/targets")
     public String createModel(Model model) {
         model.addAttribute("targets", threatModelService.getAllTargets());
+        model.addAttribute("current_targets", currentTargetsList.stream().map(TargetEntity::getId).toList());
         return "models/target_select_page";
     }
 
     @PostMapping("/sources")
     public String selectSources(@RequestParam(value = "tars", required = false) int[] targets, Model model) {
         if (targets != null) {
+            currentTargetsList.clear();
             currentTargetsList.addAll(threatModelService.getTargetsByIds(Arrays.stream(targets).boxed().map(Long::valueOf).toList()));
         }
         model.addAttribute("sources", threatModelService.getAllSources());
+        model.addAttribute("current_sources", currentSourcesList.stream().map(SourceEntity::getId).toList());
         return "models/source_select_page";
     }
 
@@ -67,14 +72,16 @@ public class ThreatModelController {
             currentSourcesList.clear();
             currentSourcesList.addAll(threatModelService.getSourcesByIds(Arrays.stream(sources).boxed().map(Long::valueOf).toList()));
         }
-        nodes = threatModelService.getNodes(currentTargetsList, currentSourcesList);
-        model.addAttribute("nodes", nodes);
+        List<ThreatNodeDto> nodes = threatModelService.getNodes(currentTargetsList, currentSourcesList);
+        threatModelService.compareNodes(currentNodes, nodes);
+        currentNodes = nodes;
+        model.addAttribute("nodes", currentNodes);
         return "models/set_coefficients_page";
     }
 
     @PostMapping("/preview")
     public String previewModel(Model model) {
-        currentModel.setNodes(nodes);
+        currentModel.setNodes(currentNodes);
         threatModelService.createModel(currentModel);
         model.addAttribute("modelData", currentModel);
         model.addAttribute("nodes", currentModel.getNodes());
@@ -88,20 +95,27 @@ public class ThreatModelController {
         return "redirect:/";
     }
 
+    @GetMapping("/view/{id}")
+    public String viewModel(@PathVariable Long id, Model model) {
+        currentModel = threatModelService.getModel(id);
+        model.addAttribute("nodes", currentModel.getNodes());
+        return "models/view";
+    }
+
     @GetMapping("/edit/{id}")
     public String editModel(@PathVariable Long id) {
-        ModelEntity model = threatModelService.getModel(id);
-        currentSourcesList = threatModelService.getSources(model);
-        currentModel.setId(model.getId());
-        currentModel.setName(model.getName());
+        currentModel = threatModelService.getModel(id);
+        currentSourcesList = threatModelService.getSources(currentModel);
+        currentTargetsList = threatModelService.getTargets(currentModel);
+        currentNodes = currentModel.getNodes();
         return "redirect:/targets";
     }
 
-    @GetMapping("/download/{id}")
-    public String downloadModel(@PathVariable Long id) {
-        threatModelService.downloadModel(id);
-        return "redirect:/";
-    }
+//    @GetMapping("/download/{id}")
+//    public String downloadModel(@PathVariable Long id) {
+//        threatModelService.downloadModel(id);
+//        return "redirect:/";
+//    }
 
     @GetMapping("/delete/{id}")
     public String deleteModel(@PathVariable Long id) {

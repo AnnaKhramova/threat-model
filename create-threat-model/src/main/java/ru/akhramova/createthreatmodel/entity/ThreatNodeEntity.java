@@ -36,9 +36,16 @@ public class ThreatNodeEntity {
     @JoinColumn(name = "source_id", referencedColumnName = "id")
     private SourceEntity source;
 
+    @Column(name = "property")
+    private String property;
+
     @ManyToOne
     @JoinColumn(name = "method_id", referencedColumnName = "id")
     private MethodEntity method;
+
+    @ManyToOne
+    @JoinColumn(name = "target_id", referencedColumnName = "id")
+    private TargetEntity target;
 
     @Column(name = "probability_of_implementation")
     private Double probabilityOfImplementation;

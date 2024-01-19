@@ -23,8 +23,9 @@
         <thead>
         <tr>
             <th scope="col">Название</th>
+            <th scope="col">Просмотр</th>
             <th scope="col">Отредактировать</th>
-            <th scope="col">Скачать</th>
+<!--            <th scope="col">Скачать</th>-->
             <th scope="col">Удалить</th>
         </tr>
         </thead>
@@ -32,13 +33,17 @@
         <tr th:each="model: ${models}">
             <td th:text="${model.getName()}"/>
             <td>
+                <a th:href="@{/view/{id} (id=${model.getId()})}"
+                   class="btn btn-primary btn-sm mb-3">Просмотр</a>
+            </td>
+            <td>
                 <a th:href="@{/edit/{id} (id=${model.getId()})}"
                    class="btn btn-primary btn-sm mb-3">Отредактировать</a>
             </td>
-            <td>
-                <a th:href="@{/download/{id} (id=${model.getId()})}"
-                   class="btn btn-primary btn-sm mb-3">Скачать</a>
-            </td>
+<!--            <td>-->
+<!--                <a th:href="@{/download/{id} (id=${model.getId()})}"-->
+<!--                   class="btn btn-primary btn-sm mb-3">Скачать</a>-->
+<!--            </td>-->
             <td>
                 <a th:href="@{/delete/{id} (id=${model.getId()})}"
                    class="btn btn-primary btn-sm mb-3">Удалить</a>

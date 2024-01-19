@@ -6,10 +6,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import ru.akhramova.createthreatmodel.entity.*;
 import org.springframework.stereotype.Service;
-import ru.akhramova.createthreatmodel.entity.mapper.MethodMapper;
-import ru.akhramova.createthreatmodel.entity.mapper.SourceMapper;
-import ru.akhramova.createthreatmodel.entity.mapper.SourceMapperContext;
-import ru.akhramova.createthreatmodel.entity.mapper.ThreatMapper;
+import ru.akhramova.createthreatmodel.entity.mapper.*;
 import ru.akhramova.createthreatmodel.repository.*;
 
 import java.util.*;
@@ -40,6 +37,8 @@ public class ThreatModelServiceImpl implements ThreatModelService {
     private final SourceMapperContext sourceMapperContext;
 
     private final MethodMapper methodMapper;
+
+    private final TargetMapper targetMapper;
 
     public List<ModelEntity> getAllModels() {
         return modelRepository.findAll();
@@ -84,24 +83,28 @@ public class ThreatModelServiceImpl implements ThreatModelService {
                             } else {
                                 node.setMethod(new MethodDto().setName(""));
                             }
-                            double rand = Math.random();
-                            if (rand < 0.11) {
-                                node.setProbabilityOfImplementation("0.0");
-                            } else if (rand < 0.3) {
-                                node.setProbabilityOfImplementation("0.2");
-                            } else if (rand < 0.6) {
-                                node.setProbabilityOfImplementation("0.5");
-                            } else {
-                                node.setProbabilityOfImplementation("1.0");
-                            }
-                            rand = Math.random();
-                            if (rand < 0.3) {
-                                node.setDanger("0.2");
-                            } else if (rand < 0.7) {
-                                node.setDanger("0.6");
-                            } else {
-                                node.setDanger("1.0");
-                            }
+                            node.setTarget(targetMapper.toDto(target));
+                            node.setProbabilityOfImplementation("0.0");
+//                            node.setDanger(new Danger().setName("0.2"));
+                            node.setDanger("0.2");
+//                            double rand = Math.random();
+//                            if (rand < 0.11) {
+//                                node.setProbabilityOfImplementation("0.0");
+//                            } else if (rand < 0.3) {
+//                                node.setProbabilityOfImplementation("0.2");
+//                            } else if (rand < 0.6) {
+//                                node.setProbabilityOfImplementation("0.5");
+//                            } else {
+//                                node.setProbabilityOfImplementation("1.0");
+//                            }
+//                            rand = Math.random();
+//                            if (rand < 0.3) {
+//                                node.setDanger("0.2");
+//                            } else if (rand < 0.7) {
+//                                node.setDanger("0.6");
+//                            } else {
+//                                node.setDanger("1.0");
+//                            }
                             nodes.add(node);
                         }
                     }
@@ -114,6 +117,7 @@ public class ThreatModelServiceImpl implements ThreatModelService {
 
     public void createModel(ModelDto model) {
         for (ThreatNodeDto node : model.getNodes()) {
+//            if ((Double.parseDouble(node.getProbabilityOfImplementation()) + Double.parseDouble(node.getDanger().getName())) / 2 > 0.5) {
             if ((Double.parseDouble(node.getProbabilityOfImplementation()) + Double.parseDouble(node.getDanger())) / 2 > 0.5) {
                 node.setActuality(true);
             } else {
@@ -139,11 +143,15 @@ public class ThreatModelServiceImpl implements ThreatModelService {
             entity.setModel(modelEntity);
             entity.setNodeId(count++);
             entity.setThreat(threatMapper.toEntity(dto.getThreat()));
-            entity.setSource(sourceMapper.toEntity(dto.getSource()));
+            Optional<SourceEntity> source = sourceRepository.findById(dto.getSource().getId());
+            entity.setSource(source.get());
+            entity.setProperty(dto.getProperty());
             if (dto.getMethod().getId() != null && !dto.getMethod().getName().equals("")) {
                 entity.setMethod(methodMapper.toEntity(dto.getMethod()));
             }
+            entity.setTarget(targetMapper.toEntity(dto.getTarget()));
             entity.setProbabilityOfImplementation(Double.parseDouble(dto.getProbabilityOfImplementation()));
+//            entity.setDanger(Double.parseDouble(dto.getDanger().getName()));
             entity.setDanger(Double.parseDouble(dto.getDanger()));
             entity.setActuality(dto.getActuality());
             nodeEntities.add(entity);
@@ -156,9 +164,15 @@ public class ThreatModelServiceImpl implements ThreatModelService {
         }
     }
 
-    public ModelEntity getModel(Long id) {
-        ModelEntity modelEntity = modelRepository.getById(id);
-        return modelEntity;
+    public ModelDto getModel(Long id) {
+        Optional<ModelEntity> modelEntity = modelRepository.findById(id);
+        ModelDto model = new ModelDto();
+        if (modelEntity.isPresent()) {
+            model.setId(modelEntity.get().getId());
+            model.setName(modelEntity.get().getName());
+            model.setNodes(getNodeDtos(modelEntity.get()));
+        }
+        return model;
     }
 
     private List<ThreatNodeDto> getNodeDtos(ModelEntity modelEntity) {
@@ -171,9 +185,16 @@ public class ThreatModelServiceImpl implements ThreatModelService {
             dto.setModelId(modelEntity.getId());
             dto.setNodeNumber(count++);
             dto.setThreat(threatMapper.toDto(entity.getThreat()));
-            dto.setSource(sourceMapper.toDto(entity.getSource()));
-            dto.setMethod(entity.getMethod() != null ? methodMapper.toDto(entity.getMethod()) : null);
+            dto.setSource(sourceMapper.toDto(entity.getSource(), sourceMapperContext));
+            dto.setProperty(entity.getProperty());
+            if (entity.getMethod() != null) {
+                dto.setMethod(methodMapper.toDto(entity.getMethod()));
+            } else {
+                dto.setMethod(new MethodDto().setName(""));
+            }
+            dto.setTarget(targetMapper.toDto(entity.getTarget()));
             dto.setProbabilityOfImplementation(entity.getProbabilityOfImplementation().toString());
+//            dto.setDanger(new Danger().setName(entity.getDanger().toString()));
             dto.setDanger(entity.getDanger().toString());
             dto.setActuality(entity.getActuality());
             nodes.add(dto);
@@ -181,14 +202,32 @@ public class ThreatModelServiceImpl implements ThreatModelService {
         return nodes;
     }
 
-    public List<SourceEntity> getSources(ModelEntity model) {
-        List<ThreatNodeDto> nodes = getNodeDtos(model);
+    public List<SourceEntity> getSources(ModelDto model) {
+        List<ThreatNodeDto> nodes = model.getNodes();
         List<SourceEntity> sources = new ArrayList<>();
         for (ThreatNodeDto node : nodes) {
             Optional<SourceEntity> source = sourceRepository.findById(node.getSource().getId());
             source.ifPresent(sources::add);
         }
         return sources;
+    }
+
+    public List<TargetEntity> getTargets(ModelDto model) {
+        List<ThreatNodeDto> nodes = model.getNodes();
+        List<TargetEntity> targets = new ArrayList<>();
+        for (ThreatNodeDto node : nodes) {
+            targets.add(targetMapper.toEntity(node.getTarget()));
+        }
+        return targets;
+    }
+
+    public void compareNodes(List<ThreatNodeDto> currentList, List<ThreatNodeDto> newList) {
+        for (ThreatNodeDto newNode : newList) {
+            if (currentList.contains(newNode)) {
+                newNode.setProbabilityOfImplementation(currentList.get(currentList.indexOf(newNode)).getProbabilityOfImplementation());
+                newNode.setDanger(currentList.get(currentList.indexOf(newNode)).getDanger());
+            }
+        }
     }
 
     public void downloadModel(Long id) {

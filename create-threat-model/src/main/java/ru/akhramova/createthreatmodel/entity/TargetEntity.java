@@ -9,6 +9,7 @@ import lombok.experimental.Accessors;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -31,6 +32,10 @@ public class TargetEntity {
             joinColumns = @JoinColumn(name = "target_id"),
             inverseJoinColumns = @JoinColumn(name = "threat_id"))
     List<ThreatEntity> threats;
+
+    @OneToMany(fetch = FetchType.EAGER)
+    @JoinColumn(name = "target_id", referencedColumnName = "id")
+    private Set<ThreatNodeEntity> nodes;
 
     @Override
     public boolean equals(Object o) {

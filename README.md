@@ -5,8 +5,9 @@
 ### Building the project
 Clone the project and use Maven to build the server
 ```
-$ mvn clean install
-$ mvn spring-boot:run
+$ ./mvnw package
+$ java -jar target/threat-model-0.0.1-SNAPSHOT.jar
+$ ./mvnw spring-boot:run
 ```
 
 ### Browser URL
